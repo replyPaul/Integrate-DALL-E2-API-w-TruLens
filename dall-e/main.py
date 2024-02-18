@@ -26,22 +26,56 @@ def gpt35_turbo(prompt):
 gpt35_turbo_recorder = TruBasicApp(gpt35_turbo, app_id="gpt-3.5-turbo", feedbacks=[f_langmatch])
 
 # Function to generate image using OpenAI API
-def generate_image(prompt):
+#def generate_image(prompt):
     # Make request to OpenAI API to generate image
-    response = openai.Completion.create(
-        engine="davinci-002",
-        prompt=prompt,
-        max_tokens=50
-    )
+   # response = openai.Completion.create(
+        #engine="davinci-002",
+       # prompt=prompt,
+        #max_tokens=150
+   # )
+
+def generate_image(prompt):
+    # Escape non-ASCII characters in the prompt
+    escaped_prompt = ""
+    for char in prompt:
+        if ord(char) > 127:  # Check if character is non-ASCII
+            escaped_prompt += "\\u" + hex(ord(char))[2:].zfill(4)
+        else:
+            escaped_prompt += char
+
+    # Make request to OpenAI API with the escaped prompt
+    response = client.completions.create(engine="davinci-002",
+                                         prompt=escaped_prompt,
+                                         max_tokens=250)
+    
 
     # Check if request was successful
-    if response and response.status == 200:
+    #if response and response.status == 200:
         # Extract the generated image URL from the response
-        image_url = response.choices[0].raw['media'][0]['url']
+    #    image_url = response.choices[0].raw['media'][0]['url']
         # Display the generated image
-        st.image(image_url, caption="Generated Image from OpenAI API", use_column_width=True)
+    #    st.image(image_url, caption="Generated Image from OpenAI API", use_column_width=True)
+    #else:
+    #    st.error("Error occurred while generating image.")
+
+    if response and response.status == 200:
+    try:
+        # Extract the generated image URL from the response
+        image_url = response.choices[0].raw.media[0].url
+
+        # Extract and encode image caption (if available)
+        image_caption = response.data.get("caption", "Generated Image from OpenAI API")
+        encoded_caption = image_caption.encode('utf-8')  # Handle non-ASCII characters
+
+        # Display the generated image
+        st.image(image_url, caption=encoded_caption, use_column_width=True)
+    except Exception as e:
+        st.error(f"Error occurred while generating image: {e}")  # Present specific error message
     else:
-        st.error("Error occurred while generating image.")
+        st.error("API request failed with status code:", response.status)  # Provide status code
+
+
+
 
 # Define a function to integrate Truelens functionality into your Streamlit app
 def truelens_functionality():
@@ -71,3 +105,5 @@ page = st.sidebar.selectbox("Select a page", list(pages.keys()))
 
 # Display the selected page
 pages[page]()
+
+echo "Current date and time: $(date)"

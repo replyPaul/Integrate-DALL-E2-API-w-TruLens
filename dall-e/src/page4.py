@@ -1,13 +1,17 @@
 import streamlit as st
-import openai
+from openai import OpenAI
+
+client = OpenAI()
 from PIL import Image
 from src.utils import get_width_height, resize_image
 from rembg import remove
 
 def page4():
-    st.title("OpenAI DALL·E Image Editing")
-    st.info("""#### NOTE: you can download image by \
+    st.markdown("# OpenAI DALL·E Image Editing :pinata: ")
+    st.subheader("❄ Generate new inmline part of the edited area of your Image ❄") # #added by Paul, but text needs to be enhanced
+    st.info("""###### NOTE: you can download image by \
     right clicking on the image and select save image as option""")
+    
 
     with st.form(key='form'):
         uploaded_file = st.file_uploader("Choose an image file", type=['png', 'jpg'])
@@ -35,16 +39,14 @@ def page4():
             st.image(backround_removed_mask, caption="backround_removed_mask", 
                      use_column_width=True)
             
-            response = openai.Image.create_edit(
-                image=our_image,
-                mask=backround_removed_mask,
-                prompt=prompt,
-                n=num_images,
-                size=size
-            )
+            response = client.images.generate(image=our_image,
+            mask=backround_removed_mask,
+            prompt=prompt,
+            n=num_images,
+            size=size)
 
             for idx in range(num_images):
-                image_url = response["data"][idx]["url"]
+                image_url = response.data[idx].url
 
                 st.image(image_url, caption=f"Generated image: {idx+1}",
                          use_column_width=True)

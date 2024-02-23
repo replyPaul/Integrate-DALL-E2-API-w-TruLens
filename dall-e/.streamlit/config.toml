@@ -1,0 +1,25 @@
+[theme]
+base="dark"
+
+gatherUsageStats = false
+
+# screens and components. Examples of widgets using this color are st.slider and st.checkbox.
+primaryColor = "chartreuse" # "#919e8b" # green
+
+# Background color for the main container.
+#backgroundColor = "rgba(254,248,239,1)" # sepia yellow
+#backgroundColor = "rgb(133,125,196)" # shipcove 
+backgroundColor = "#857dc4"
+
+# Used as the background for most widgets. Examples of widgets with this background are st.sidebar, st.text_input, st.date_input.
+secondaryBackgroundColor =  "#6a649d" # "#ebd2b9" # wheat "#d7ab82" # yellow <-- not enough contrast. 
+
+
+# Font color for the page.
+#textColor = "#6e7074" # grey
+textColor = "#f4f4f9"
+
+# Font family (serif | sans serif | mono) for the page. Will not impact code areas.
+# Default: "sans serif"
+font = "monospace"
+

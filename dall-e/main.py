@@ -7,6 +7,30 @@ from trulens_eval import TruBasicApp, Feedback, Huggingface
 import openai
 import os
 from dotenv import load_dotenv
+#import dall_e_2_api
+
+
+#added by PaulB to increase the UX by showing inside the tab for easy access/ notice among many open tabs
+st.set_page_config(
+    page_title="WWISE",  
+    page_icon="👋",
+)
+
+
+#added by PaulB to chnage the default hyoperlink colors
+link_color = "#35324e"
+# Inject CSS using markdown and `unsafe_allow_html`
+st.markdown(f"""<style>
+a:link {{ color: {link_color}; }}
+a[href="https://labs.openai.com/"] {{ color: {link_color}; }}
+a[href="https://platform.openai.com/docs/models/dall-e"] {{ color: {link_color}; }}
+</style>""", unsafe_allow_html=True)
+
+
+
+
+# ... rest of the Streamlit app code...
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -31,7 +55,7 @@ gpt35_turbo_recorder = TruBasicApp(gpt35_turbo, app_id="gpt-3.5-turbo", feedback
    # response = openai.Completion.create(
         #engine="davinci-002",
        # prompt=prompt,
-        #max_tokens=150
+        #max_tokens=50
    # )
 
 def generate_image(prompt):
@@ -58,19 +82,20 @@ def generate_image(prompt):
     #else:
     #    st.error("Error occurred while generating image.")
 
+    # Check if request was successful
     if response and response.status == 200:
-    try:
-        # Extract the generated image URL from the response
-        image_url = response.choices[0].raw.media[0].url
+        try:
+            # Extract the generated image URL from the response
+            image_url = response.choices[0].raw.media[0].url
 
-        # Extract and encode image caption (if available)
-        image_caption = response.data.get("caption", "Generated Image from OpenAI API")
-        encoded_caption = image_caption.encode('utf-8')  # Handle non-ASCII characters
+            # Extract and encode image caption (if available)
+            image_caption = response.data.get("caption", "Generated Image from OpenAI API")
+            encoded_caption = image_caption.encode('utf-8')  # Handle non-ASCII characters
 
-        # Display the generated image
-        st.image(image_url, caption=encoded_caption, use_column_width=True)
-    except Exception as e:
-        st.error(f"Error occurred while generating image: {e}")  # Present specific error message
+            # Display the generated image
+            st.image(image_url, caption=encoded_caption, use_column_width=True)
+        except Exception as e:
+            st.error(f"Error occurred while generating image: {e}")  # Present specific error message
     else:
         st.error("API request failed with status code:", response.status)  # Provide status code
 
@@ -91,19 +116,29 @@ def truelens_functionality():
     st.write("Truelens analysis result:")
     st.write(result)
 
+
+
+
+
 # Define the pages dictionary with the added Truelens functionality
 pages = {
     "Entry point": page1,
     "Text to image": page2,
     "Image variation": page3,
     "Image edit": page4,
-    "Truelens Functionality": truelens_functionality
+    "Trulens Functionality": truelens_functionality
 }
 
-# Create the selectbox in the sidebar
-page = st.sidebar.selectbox("Select a page", list(pages.keys()))
+
+#added by PaulB to increase the UX of the app : explnation discussed over meeting
+# also in future we need to enhance UX by using multi page app feature w/o error
+# Create radio buttons in the sidebar for selecting pages
+selected_page = st.sidebar.radio(
+        "Select a page",
+        list(pages.keys()),
+        label_visibility="visible")
 
 # Display the selected page
-pages[page]()
+pages[selected_page]()
 
-echo "Current date and time: $(date)"
+

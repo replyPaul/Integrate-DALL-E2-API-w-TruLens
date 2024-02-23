@@ -1,9 +1,12 @@
 import streamlit as st
-import openai
+from openai import OpenAI
+
+client = OpenAI()
 
 def page2():
-    st.title("OpenAI DALL·E Image Generation")
-    st.info("""#### NOTE: you can download image by \
+    st.markdown("# OpenAI DALL·E Image Generation :potted_plant: ")
+    st.subheader("❄ Generate upto 4 numbers of novel Images using your creative prompts ❄")
+    st.info("""###### NOTE: you can download image by \
     right clicking on the image and select save image as option""")
 
     with st.form(key='form'):
@@ -15,14 +18,12 @@ def page2():
 
     if submit_button:
         if prompt:
-            response = openai.Image.create(
-                    prompt = prompt,
-                    n = num_images,
-                    size=size,
-                )
+            response = client.images.generate(prompt = prompt,
+            n = num_images,
+            size=size)
             
             for idx in range(num_images):
-                image_url = response["data"][idx]["url"]
+                image_url = response.data[idx].url
 
                 st.image(image_url, caption=f"Generated image: {idx+1}",
                          use_column_width=True)

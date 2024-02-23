@@ -5,4 +5,7 @@ python-dotenv
 openai
 streamlit
 rembg
-trulens_eval
+langchain
+trulens-eval
+
+

@@ -1,5 +1,9 @@
 import streamlit as st
 
+import time
+
+
+
 introduction = """
 Brief details about OpenAI DALL-E:
 
@@ -44,3 +48,7 @@ Source: Conversation with Bing, 4/29/2023
 def page1():
     st.title("OpenAI DALL·E")
     st.markdown(introduction)
+    
+  
+
+
